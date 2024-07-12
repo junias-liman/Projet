@@ -1,0 +1,50 @@
+{% include "Vues/header.html" %}
+ <div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog" id="modalSignin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header p-5 pb-4 border-bottom-0">
+          <h1 class="fw-bold mb-0 fs-5">Enregistrer Un Nouveau Traitement</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+  
+        <div class="modal-body p-5 pt-0">
+          <form action="{% url "type_trt" %}" method="POST">
+            {% csrf_token %}
+           
+            <div class="form-floating mb-3">
+                <input type="text" name='vet' value="{% if type_modif %}{{type_modif.libelle}}{% endif %} "class="form-control rounded-3" id="floatingPassword" placeholder="Numéro de téléphone" >
+               
+            </div>
+            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" name="trait" value="{{type_modif.pk}}" type="submit">Sign up</button>
+           
+            <hr class="my-4">
+            <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
+          </form>
+          <div class="table-responsive small">
+            <table class="table table-striped ">
+              <thead>
+                <tr>
+                  <th scope="col">N°</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Evenement</th>
+              </tr>
+              </thead>
+              <tbody>
+                {% for vet in  type_vet %}
+                <tr>  
+                    <td>{{ forloop.counter  }}</td>
+                    <td>{{ vet.libelle }}</td>
+                    <form action="{% url "modif" %}" method="post">
+                        {% csrf_token %}
+                        <td><button type="submit" name="modi"  value="{{ vet.pk }}" class="btn btn-outline-primary">Modifier</button></td>
+                    </form>                    
+                  </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+</div> 
+
+{% include "Vues/footer.html" %}

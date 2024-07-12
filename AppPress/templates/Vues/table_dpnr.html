@@ -1,0 +1,160 @@
+{% include "Vues/header.html" %}
+
+{% include "Vues/Side.html" %}
+<div class="col-sm-10"> 
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Table Dépot</h1>
+    
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class=" px-3 py-2  mb-1">
+        <div class="container d-flex flex-wrap justify-content-center">
+          <form class="col-12 col-lg-auto mb-2 mb-lg-0 btn-group" method="get" action="{% url 'table_depot' %}" role="search">
+                      
+            <input  type="search" class="form-control" name="query1" value="{{ request.GET.query1 }}" placeholder="Search Client..." aria-label="Search">
+          </form>
+          <form class="col-12 col-lg-auto mb-2 mb-lg-0 btn-group" method="get" action="{% url 'table_depot' %}" role="search">
+          
+            <input  type="date" class="form-control" name="query2" value="{{ request.GET.query2 }}" placeholder="Search Date de dépot..." aria-label="Search">
+            <button type="Submit" class="btn btn-md btn-outline-secondary">Recherche</button>
+
+          </form>
+  
+          
+        </div>
+      </div> 
+     
+    </div>
+  </div> 
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <div class="px-3 py-2 mb-1">
+        <div class="container d-flex flex-wrap justify-content-center">
+        
+
+              <form class="col-12 col-lg-auto mb-2 mb-lg-0 btn-group" method="get" action="{% url 'type_dpnr' %}" role="search">
+                
+                <input  type="search" height='20px' class="form-control" name="nbr" value="{{ request.GET.nbr }}" placeholder="Nombre..." aria-label="Search">
+              </form>
+
+        </div>
+    </div>
+</div>
+  <div class="table-responsive small">
+  <table class="table table-striped ">
+    <thead>
+      <tr>
+        <th scope="col">N°</th>
+        <th scope="col">Client</th>
+        <th scope="col">Montant</th>
+        <th scope="col">Date dépot</th>
+        <th scope="col">Date retrait</th>
+        <th scope="col">Facture</th>
+        <th scope="col">Action</th>
+    
+      </tr>
+    </thead>
+
+{% if query %}
+<tbody>
+  {% for  clt in  query %}
+
+  <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ clt.client.Lastname }}</td>
+      <td>{{ clt.montant }}</td>
+      <td>{{ clt.date_depot }}</td>
+      <td>{{ clt.date_retrait }}</td>
+      
+        <form action="{% url "modifier" %}" method="post">
+          {% csrf_token %}
+          <td> <button type="submit" name="mod" value={{ clt.pk }}  class="btn btn-outline-primary">
+            {% if clt.Regler == True%}
+            Régler 
+            {% else %}
+            Non Régler 
+            {% endif %}
+          </button></td>           
+         </form>
+        <form action="{% url "detail" %}" method="post">
+          {% csrf_token %}
+          <td>
+            <button type="submit" name="det" value={{ clt.pk }}  class="btn btn-outline-primary">Détail</button> 
+          
+          </td>
+        </form> 
+  </tr>
+ 
+   
+</tbody>
+    {% endfor %}
+
+    {% else %}
+    
+    <tbody>
+      {% for  clt in  page_obj %}
+
+      <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ clt.client.Lastname }}</td>
+          <td>{{ clt.montant }}</td>
+          <td>{{ clt.date_depot }}</td>
+          <td>{{ clt.date_retrait }}</td>
+                   
+            <form action="{% url "modifier" %}" method="post">
+              {% csrf_token %}
+              <td> <button type="submit"  name="nret" value={{ clt.pk }}  class="btn btn-outline-primary">
+                {% if clt.Regler == True%}
+                Régler 
+                {% else %}
+                Non Régler 
+                {% endif %}
+              </button></td>         
+               </form>
+            <form action="{% url "detail" %}" method="post">
+              {% csrf_token %}
+              <td>
+                <button type="submit" name="det" value={{ clt.pk }}  class="btn btn-outline-primary">Détail</button> 
+              
+              </td>
+          
+            </form> 
+      </tr>
+      {% endfor %}
+     
+    </tbody>
+   
+ 
+  {% endif %}
+</table>
+  <nav aria-label="Page navigation">
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">&laquo; First</span></li>
+            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a></li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">Next</span></li>
+            <li class="page-item disabled"><span class="page-link">Last &raquo;</span></li>
+        {% endif %}
+    </ul>
+</nav>
+
+  </main>
+  </div>
+  </div>
+
+{% include "Vues/footer.html" %}

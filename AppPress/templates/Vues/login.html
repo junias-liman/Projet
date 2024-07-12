@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Glassmorphism</title>
+    <!--Google Font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <!--Stylesheet-->
+    <link rel="stylesheet" href="{% static "login/login.css" %}">
+</head>
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <form action="{% url "route" %}" method="POST"> 
+        {% csrf_token %}
+        <h3>Te revoilà!
+            <span>Connectez-vous.</span>
+        </h3>
+
+        <label for="username">Pseudo</label>
+        <input type="text" name='user' placeholder="Username" id="username">
+
+        <label for="password">Mot de passe</label>
+        <input type="password" name="pwd" placeholder="*************" id="password">
+
+        <button >Connexion</button>
+    </form>
+</body>
+</html>

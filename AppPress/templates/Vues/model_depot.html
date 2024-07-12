@@ -1,0 +1,261 @@
+
+
+{% include "Vues/header.html" %}
+
+{% include "Vues/Side.html" %}
+
+
+<div class="col-7 album py-5 card" >
+    
+     
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            <div class="col-md-4 ">
+                <h3>Vêtements Enregistrée<hr></h3>
+            </div>   
+        </div> 
+        
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for image in img %}
+            <div class="col-md-3 card">
+               
+                <img id="image_src-{{image.pk}}" src="http://127.0.0.1:8000/static/img/{{image.image}}" alt="logo"   width="100%" height="100%">
+                <hr>
+
+                <div class="d-flex justify-content-between align-items-center" id="addItemForm">
+                    {% csrf_token %} 
+                    <p style="display: none;" id="prix-{{image.pk}}">{{image.type_vetements.tarif.Prix}}</p>
+                    <h6 class="card-text">{{image.type_vetements.libelle}}</h6>
+                    <div  class="btn-group">
+                       
+                        <button onclick="add_elmt(this)" id="{{image.pk}}" name="depo" class="btn btn-sm btn-outline-secondary">Ajouter</button>
+                        <input type="hidden"  name="clien" id="clien" class="form-control"  placeholder="" value="{{id_client}}" required>
+                        <input type="hidden"  name="photo" id="photo" class="form-control"  placeholder="" value="{{image.image}}" required>
+                    </div>                
+                </div>
+                
+            </div>  
+            {% endfor %}
+        </div> 
+          <br> 
+          <hr>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            <div class="col-md-4 ">
+                <h3>Nouvelle Enregistrement<hr></h3>
+            </div>   
+        </div>
+    <form action="{% url "modals_depot"  %}" method="POST">
+            {% csrf_token %}
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            <div class="col-md-6">
+               
+                <label for="lastName" class="form-label">Type de Vêtements</label>
+                <div class="input-group has-validation">
+                    <select name="vet"  class="form-select rounded-3 mb-3  dropdown-toggle col-sm-6" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <option>Vêtements</option>
+                    {% for vet in vetem %}
+                        <option value="{{ vet.id }}">{{ vet.libelle }}</option>
+                    {% endfor %}
+                    </select> 
+                </div> 
+            </div>
+            <div class="col-md-6">
+                <label for="lastName" class="form-label">Image du vêtement</label>
+                <input type="file" name="img" class="form-control" id="lastName" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                    Valid last name is required.
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            <button type="submit" onclick="showAlert('Bien Enregistrer !')" class="btn btn-md btn-info">Enregistrer</button>
+            <input type="hidden"  name="clien" class="form-control" id="lastName" placeholder="" value="{{id_client}}" required>
+            
+        </div> 
+    </form> 
+        {% for t in tarif %}
+        <div style="display: none;">
+            <input id="nbr-{{ forloop.counter }}" value="{{t.nbr_vet}}"/>
+            <input id="amoung-{{ forloop.counter }}" value="{{t.Prix}}"/>
+        </div>
+    {% endfor %}
+    
+    <p id="tarif-count" style="display: none;">{{tarif|length }}</p>
+</div> 
+
+<form id="depot-form" style="display: none;" action="{% url 'modals_depot'%}" method="POST">
+    {% csrf_token %}
+    <input type="hidden"  name="clnts" class="form-control" id="lastName" placeholder="" value="{{id_client}}" required>
+
+</form> 
+
+<div class="col-3 album py-5 bg-body-tertiary">
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            
+            <div class="col-md-12 bg-body-tertiary ">
+                <h3>Vêtements à néttoyer<hr></h3>
+                
+            </div> 
+
+            <div class="col-md-12 bg-body-tertiary ">
+                <table id="itemsTable" class="table table-striped table-hover table-bordered">
+                    <thead>
+                        <tr>
+                        <th scope="col">N°</th>
+                        <th scope="col">Vêtements</th>
+                        <th scope="col">Décocher</th>
+                        
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                
+            </div> 
+            <div class="col-md-12 bg-body-tertiary ">
+                <h4>Montant à Payer:  <strong id="total-prix">0</strong></h4>
+                <h4>Après rabais:  <strong id="rabais-prix">0</strong></h4>
+                <button onclick="send_form()" name="enreg" type="button" value="{{id_client}}" class="btn btn-md btn-info">Enregistrer</button>               
+            </div> 
+        </div>   
+</div>      
+<style>
+    tbody img{
+        width: 50px;
+        height: 50px;
+    }
+</style>  
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    let vet_count = 1;
+    let j = 0;
+    let prix_total = 0;
+    let discount_price = 0;
+    let form_depot = document.getElementById("depot-form");
+    let tarif_dict = new Map();
+    let button_dict = new Map();
+    let tarif_sizes_dict = new Map();
+    let tarif_size = parseInt(document.getElementById("tarif-count").innerHTML, 10);
+
+    for(let i=1; i<=tarif_size; i++){
+        tarif_dict[parseInt(document.getElementById("nbr-"+i).value, 10)] = parseInt(document.getElementById("amoung-"+i).value, 10);
+        tarif_sizes_dict[i] = parseInt(document.getElementById("nbr-"+i).value, 10);
+    }
+
+    function add_elmt(e){
+        const image_id = e.id;
+        const image_url = document.getElementById("image_src-"+image_id).src;
+        let table_body = document.getElementsByTagName("tbody")[0];
+        let tr_elm = document.createElement("tr");
+        let no = document.createElement("td");
+        let vet_td = document.createElement("td");
+        let del_btn_td = document.createElement("td");
+        let del_btn = document.createElement("button");
+        let image = document.createElement("img");
+        const prix_vet = parseInt(document.getElementById("prix-"+image_id).innerHTML, 10);
+        let input_ = document.createElement("input");
+        let uuid = window.crypto.randomUUID();
+
+
+        input_.id = "input-"+uuid;
+        input_.name = image_id;
+        input_.value = image_id;
+        form_depot.appendChild(input_);
+        del_btn_td.id = uuid;
+        image.src = image_url;
+        no.appendChild(document.createTextNode(vet_count));
+        vet_td.appendChild(image);
+        del_btn_td.appendChild(del_btn);
+        del_btn.appendChild(document.createTextNode('enlever'));
+        tr_elm.id = "ligne-"+image_id;
+        tr_elm.appendChild(no);
+        tr_elm.appendChild(vet_td);
+        tr_elm.appendChild(del_btn_td);
+        table_body.appendChild(tr_elm);
+        del_btn.id = image_id;
+        del_btn.addEventListener("click", () => {remove_elmt(del_btn);});
+        prix_total += prix_vet;
+
+        document.getElementById("total-prix").innerHTML = prix_total;
+
+        vet_count++;
+        j++;
+        make_discount(prix_vet);
+    }
+
+    function remove_elmt(e){
+        const image_id = e.id;
+        const image_url = document.getElementById("image_src-"+image_id).src;
+        let table_body = document.getElementsByTagName("tbody")[0];
+        let tr_elm = document.getElementById("ligne-"+image_id);
+        const prix_vet = parseInt(document.getElementById("prix-"+image_id).innerHTML, 10);
+
+        form_depot.removeChild(document.getElementById("input-"+e.parentElement.id));
+        table_body.removeChild(tr_elm);
+        prix_total -= prix_vet;
+
+        document.getElementById("total-prix").innerHTML = prix_total;
+
+        vet_count--;
+        j--;
+        make_discount(prix_vet);
+    }
+
+    function make_discount(price){
+        for(let i=1; i<=tarif_size; i++){
+            if(i<tarif_size){
+                if(j >= tarif_sizes_dict[i] && j < tarif_sizes_dict[i+1]){
+                    discount_price = tarif_dict[tarif_sizes_dict[i]] + price*(j-tarif_sizes_dict[i]);
+                }
+            } 
+        }
+        if(j >= tarif_sizes_dict[tarif_size]){
+            discount_price = tarif_dict[tarif_sizes_dict[tarif_size]] + price*(j-tarif_sizes_dict[tarif_size]);
+        } 
+        document.getElementById("rabais-prix").innerHTML = discount_price;
+    }
+
+    function send_form(){
+        let pric = document.createElement("input");
+        pric.name = "prix";
+        pric.value = discount_price;
+        form_depot.appendChild(pric);
+        form_depot.submit();
+    }
+
+</script>
+
+{% include "Vues/footer.html" %}
+

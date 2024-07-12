@@ -1,0 +1,149 @@
+{% comment %} <!-- template.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ajouter des éléments</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Ajouter des éléments</h1>
+    <form id="addItemForm">
+        {% csrf_token %}
+        <input type="text" name="name" id="name" placeholder="Nom de l'élément">
+        <button type="button" id="addButton">Ajouter</button>
+    </form>
+    <h2>Éléments ajoutés</h2>
+    <table id="itemsTable" border="1">
+        <thead>
+            <tr>
+                <th>Nom de l'élément</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Les éléments ajoutés s'afficheront ici -->
+        </tbody>
+    </table>
+    <button type="button" id="saveButton">Enregistrer</button>
+
+    <script>
+        $(document).ready(function() {
+            var items = [];
+
+            $("#addButton").click(function() {
+                var name = $("#name").val();
+                if (name) {
+                    $.ajax({
+                        url: "{% url 'add_item' %}",
+                        method: "POST",
+                        data: {
+                            name: name,
+                            csrfmiddlewaretoken: "{{ csrf_token }}",
+                        },
+                        success: function(response) {
+                            items.push({name: response.name});
+                            $("#itemsTable tbody").append('<tr><td>' + response.name + '</td></tr>');
+                            $("#name").val('');  // Clear the input field
+                        },
+                        error: function(xhr, errmsg, err) {
+                            alert("Erreur: " + errmsg);
+                        }
+                    });
+                } else {
+                    alert("Veuillez entrer un nom d'élément.");
+                }
+            });
+
+            $("#saveButton").click(function() {
+                if (items.length > 0) {
+                    $.ajax({
+                        url: "{% url 'save_items' %}",
+                        method: "POST",
+                        data: {
+                            items: JSON.stringify(items),
+                            csrfmiddlewaretoken: "{{ csrf_token }}",
+                        },
+                        success: function(response) {
+                            if (response.status === "success") {
+                                alert("Éléments enregistrés avec succès!");
+                                $("#itemsTable tbody").empty();
+                                items = [];  // Clear the local array
+                            } else {
+                                alert("Erreur lors de l'enregistrement des éléments.");
+                            }
+                        },
+                        error: function(xhr, errmsg, err) {
+                            alert("Erreur: " + errmsg);
+                        }
+                    });
+                } else {
+                    alert("Aucun élément à enregistrer.");
+                }
+            });
+        });
+    </script>
+</body>
+</html> {% endcomment %}
+
+<!-- myapp/templates/myapp/item_list.html -->
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Item List</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1>Item List</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in page_obj %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.name }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">&laquo; First</span></li>
+                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li clas    s="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Next</span></li>
+                <li class="page-item disabled"><span class="page-link">Last &raquo;</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

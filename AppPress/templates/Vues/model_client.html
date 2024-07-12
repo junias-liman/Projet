@@ -1,0 +1,50 @@
+
+{% include "Vues/header.html" %}
+<div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog" id="modalSignin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header p-5 pb-4 border-bottom-0">
+          <h1 class="fw-bold mb-0 fs-2">Enregistrer Clients</h1>
+          <a  class="btn-close" href="{% url "table_client" %}"aria-label="Close"></a>
+        </div>
+        
+        <div class="modal-body p-5 pt-0">
+          <form action="{% url "forms" %}" method="POST">
+            {% csrf_token %}
+            <div class="form-floating mb-3">
+             
+              <input type="text" name='first' value="{% if reg  %}{{ clients.Username }}{% endif %}" class="form-control rounded-3" id="floatingInput" placeholder="Nom">
+              <label for="floatingInput">Firstname</label>
+            </div>
+            <div class="form-floating mb-3">
+              
+              <input type="text" name='last' value="{% if reg  %}{{ clients.Lastname }}{% endif %}"  class="form-control rounded-3" id="floatingPassword" placeholder="Prenom">
+              <label for="floatingPassword">Lastname</label>
+            </div>
+            <div class="form-floating mb-3">
+              
+              <input type="email" name='email'value="{% if reg  %}{{ clients.Mail }}{% endif %}"  class="form-control rounded-3"  id="floatingPassword" placeholder="Mail">
+                <label for="floatingPassword">Email</label>
+            </div>
+            <div class="form-floating mb-3">
+              
+              <input type="text" name='numero'value="{% if reg  %}{{ clients.Number }}{% endif %}"  class="form-control rounded-3" id="floatingPassword" placeholder="Numéro de téléphone">
+                <label for="floatingPassword">Number</label>
+            </div>
+            <div class="form-floating mb-3">
+              
+              <input type="text" name='adresse'value="{% if reg  %}{{ clients.Adresse }}{% endif %}" class="form-control rounded-3" id="floatingPassword" placeholder="Adresse">
+                <label for="floatingPassword">Adresse</label>
+            </div>
+            <button onclick="showAlert('Enregistrer Avec Succès !')" name='id' value="{% if reg  %}{{ clients.pk }}{% endif %}" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign up</button>
+            <small class="text-body-secondary"></small>
+            <hr class="my-4">
+            <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
+        
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+{% include "Vues/footer.html" %}

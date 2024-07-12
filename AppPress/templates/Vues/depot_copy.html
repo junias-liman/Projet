@@ -1,0 +1,100 @@
+
+{% include "Vues/header.html" %}
+<div class="col-lg-4" style="position:relative; left:500pt;">
+  <h4 class="mb-3">Dépot De Vêtements</h4>
+  <form class="needs-validation" action='{% url "modals_depot" %}' method="POST" novalidate>
+    {% csrf_token %}
+    <label for="lastName" class="form-label">Sélectionné Le client</label>
+    <select name="clt"  class="form-select rounded-3 mb-3  dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <option>Client</option>
+      {% for client in clients %}
+      <option value="{{ client.id }}">{{ client.Username }}</option>
+      {% endfor %}
+    </select>
+      <div class="col-12">
+        <label for="username" class="form-label">Montant</label>
+        <div class="input-group has-validation">
+          <span class="input-group-text">$</span>
+          <input type="text" name='mont' class="form-control" id="username" placeholder="Username" required>
+        <div/>
+        <div class="invalid-feedback">
+            Your username is required.
+          </div>
+        </div>
+      </div>
+     
+      <div class="col-md-5">
+       
+      </div>
+
+    </div>
+    <hr class="my-4">
+    <button class="w-100 btn btn-primary btn-lg" name="depot" value="depot" type="submit">Enregistrer</button>
+    <hr class="my-4">
+  </form>
+
+  
+    <form class="needs-validation" action='{% url "modals_depot" %}' method="POST" novalidate>
+      {% csrf_token %}
+    {% if Ajout %}
+    
+    <input type="hidden" name="pk" class="form-control" id="lastName" placeholder="" value="{{Ajout.pk}}" required>
+    <input type="hidden" name="etiq" class="form-control" id="lastName" placeholder="" value="{{Ajout.marque}}" required>
+    <h2 value="liman"> Etiquette à mettre sur le/les habits: {{Ajout.marque }}</h2>
+  <div class="row g-1">
+  <div class="col-sm-6">
+    <label for="lastName" class="form-label">Type de Vêtements</label>
+    <div class="input-group has-validation">
+      <select name="vet"  class="form-select rounded-3 mb-3  dropdown-toggle col-sm-6" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <option>Vêtements</option>
+        {% for vet in vetem %}
+        <option value="{{ vet.id }}">{{ vet.libelle }}</option>
+        {% endfor %}
+      </select> 
+    </div> 
+  </div>
+  <div class="col-sm-6">
+    <label for="lastName" class="form-label"> Nombre du vêtements</label>
+    <input type="number" name="nbr" class="form-control" id="lastName" placeholder="" value="" required>
+    <div class="invalid-feedback">
+      Valid last name is required.
+    </div>
+  </div>
+
+  <hr class="my-4">
+  <button class="w-100 btn btn-primary btn-lg"  name="type" value="type" type="submit">Enregistrer</button>
+
+     {% elif bouton %} 
+      <input type="hidden" name="id" class="form-control" id="lastName" placeholder="" value="{{id_depot}}" required>
+      <input type="hidden" name="etiq" class="form-control" id="lastName" placeholder="" value="{{etiquette}}" required>
+      <h2 value="liman">{% if bouton  %} Etiquette à mettre sur le/les habits: {{etiquette}}{% endif %}</h2>
+    <div class="row g-1">
+    <div class="col-sm-6">
+      <label for="lastName" class="form-label">Type de Vêtements</label>
+      <div class="input-group has-validation">
+        <select name="vet"  class="form-select rounded-3 mb-3  dropdown-toggle col-sm-6" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <option>Vêtements</option>
+          {% for vet in vetem %}
+          <option value="{{ vet.id }}">{{ vet.libelle }}</option>
+          {% endfor %}
+        </select> 
+      </div> 
+    </div>
+    <div class="col-sm-6">
+      <label for="lastName" class="form-label"> Nombre du vêtements</label>
+      <input type="number" name="nbr" class="form-control" id="lastName" placeholder="" value="" required>
+      <div class="invalid-feedback">
+        Valid last name is required.
+      </div>
+    </div>
+    <hr class="my-4">
+    <button class="w-100 btn btn-primary btn-lg"  name="type" value="type" type="submit">Enregistrer</button>
+    
+  </form>
+  {% endif %}
+</div>
+</div>
+</main>
+</div>
+
+{% include "Vues/footer.html" %}

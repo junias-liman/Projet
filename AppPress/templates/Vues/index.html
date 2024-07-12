@@ -1,0 +1,117 @@
+
+ {% include "Vues/header.html" %}
+  
+
+    {% include "Vues/Side.html" %}
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 id="puzzle"class="h2">Dashboard</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group me-2">
+            
+          </div>
+          
+        </div>
+      </div>
+      <main>
+
+       
+      
+        <div class="album py-5 bg-body-tertiary">
+          <div class="container">
+      
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+             
+              <div class="col-md-3  ">
+                <div class="card shadow-sm">
+                  <img src="http://127.0.0.1:8000/static/img/client.png" alt="logo"   width="100%" height="100%">
+                  <hr>
+                  <div class="card-body">
+                    <p class="card-text">Client</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="btn-group">
+                        <a href="{% url "table_client" %}" class="btn btn-sm btn-outline-secondary">Table</a>
+                        <a href="{% url "modals_client" %}"  class="btn btn-sm btn-outline-secondary">Add</a>
+                      </div>
+                      <small class="text-body-secondary">{{nbr_clt}} client</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col6md-4">
+                <div class="card shadow-sm">
+                  <img src="http://127.0.0.1:8000/static/img/pressing.png" alt="logo"   width="100%" height="100%">
+                  <hr>
+                
+                  <div class="card-body">
+                    <p class="card-text">Liste des dépot réglé</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="btn-group">
+                        <a href="{% url "type_dpr" %}" class="btn btn-sm btn-outline-secondary">Table</a>
+                      </div>
+                      <small class="text-body-secondary">{{nbr_ret}} éléments</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="card shadow-sm">
+                  <img src="http://127.0.0.1:8000/static/img/logo1.jpg" alt="logo"   width="100%" height="100%">
+
+                  <div class="card-body">
+                    <p class="card-text">Liste des dépot Non réglé</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="btn-group">
+                        <a href="{% url "type_dpnr" %}" class="btn btn-sm btn-outline-secondary">Table</a>
+
+                      </div>
+                      <small class="text-body-secondary">{{nbr_nret}} éléments</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+      
+              <div class="col">
+                <div class="card shadow-sm">
+                  <img src="http://127.0.0.1:8000/static/img/pressing.jpg" alt="logo"   width="100%" height="100%">
+                  <hr>                 
+                   <div class="card-body">
+                    <p class="card-text">Dépôt</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="btn-group">
+                        <a type="button" href="{% url "table_depot" %}"  class="btn btn-sm btn-outline-secondary">Table</a>
+                      </div>
+                      <small class="text-body-secondary">{{nbr_dep}} dépôt</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="card ">
+                  <img src="http://127.0.0.1:8000/static/img/logo6.png" alt="logo"   width="100%" height="100%">
+                  <hr>                 
+                   <div class="card-body">
+                    <p class="card-text">PORTEFEUILLE</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="btn-group">
+                        <a type="button" href="{% url "histo" %}"  class="btn btn-sm btn-outline-secondary">Table</a>
+                      </div>
+                      <small class="text-body-secondary"></small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>
+        </div>
+      </main>
+    </main>
+      
+     
+  
+       
+      
+{% include "Vues/footer.html" %}
+
+     

@@ -1,0 +1,141 @@
+{% include "Vues/header.html" %}
+{% comment %} {% include "Vues/Side.html" %} {% endcomment %}
+<main class=" ms-sm-auto  px-md-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 id="puzzle"class="h2">Zone Vêtements</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group me-2">
+
+      </div>
+      
+    </div>
+
+  </div>
+  <br>
+  <main>
+   
+    <div class="modal modal-sheet position-relative d-block bg-body-secondary pb-5 p-4 py-md-5 col-6" tabindex="-1" role="dialog" id="modalSignin">
+     
+      <div class="container">
+
+      <div class="row">
+       
+        <div class="modal-dialog  col-md-2" role="document">
+          <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+              <h1 class="fw-bold mb-0 fs-2">Type Vêtements</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+      
+            
+            <div class="modal-body p-5 pt-0">
+              <form action="{% url "type_vet" %}" method="POST">
+                {% csrf_token %}
+              <p>Vêtement<p>
+                <div class="form-floating mb-3">
+                    <input type="text" name='libelle' class="form-control rounded-3" value="{% if type_mod %}{{ type_mod.libelle }}{% endif %}" id="floatingPassword" placeholder="Numéro de téléphone" required>
+                </div>
+                
+              
+                <button name="modif" value="{{ type_mod.pk }}" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign up</button>
+              
+                <hr class="my-4">
+               
+              </form>
+             
+            </div>
+          </div>
+        </div>
+
+
+      <div class="modal-body col-md-4" role="document">
+        <div class="modal-content rounded-4 shadow">
+          <div class="modal-header p-5 pb-4 border-bottom-0">
+            <h1 class="fw-bold mb-0 fs-2">Table</h1>
+            <form class="col-12 col-lg-auto mb-2 mb-lg-0 btn-group"  style="position:relative; left:200px ;width:150px;" method="get" action="{% url 'type_vet' %}" role="search">
+                  
+              <input  type="search" class="form-control" with="50px" name="query1" value="{{ request.GET.query1 }}" placeholder="Vêtements..." aria-label="Search">
+            </form>
+           
+            <a  href="{% url "table_client" %}" class="btn-close" aria-label="Close"></a>
+          </div>
+
+          <div class="modal-body p-5 pt-0">
+              
+              <div class="table-responsive small">
+                <table class="table table-striped ">
+                  <thead>
+                    <tr>
+                      <th scope="col">N°</th>
+                      <th scope="col">Nombre Vêtement</th>
+                      
+                      <th scope="col">Action</th>
+                  </tr>
+                  </thead>
+                  {% if query %}
+                  <tbody>
+                    {% for tar in query %}
+                    <tr>  
+                        <td>{{ forloop.counter  }}</td>
+                        <td>{{ tar.libelle }}</td>
+                       
+                        <form action="{% url "type_vet" %}" method="post">
+                            {% csrf_token %}
+                            <td><button type="submit" name="env" value="{{ tar.pk }}"  class="btn btn-outline-primary"> Modifier</button></td>
+                        </form>                    
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  {% else %}
+                  <tbody>
+                    {% for tar in page_obj %}
+                    <tr>  
+                        <td>{{ forloop.counter  }}</td>
+                        <td>{{ tar.libelle }}</td>
+                       
+                        <form action="{% url "type_vet" %}" method="post">
+                            {% csrf_token %}
+                            <td><button type="submit" name="env" value="{{ tar.pk }}"  class="btn btn-outline-primary"> Modifier</button></td>
+                        </form>                    
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                    {% endif %}
+                </table>
+            </div>
+            <nav aria-label="Page navigation">
+              <ul class="pagination">
+                  {% if page_obj.has_previous %}
+                      <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+                      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+                  {% else %}
+                      <li class="page-item disabled"><span class="page-link">&laquo; First</span></li>
+                      <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                  {% endif %}
+          
+                  {% for num in page_obj.paginator.page_range %}
+                      {% if page_obj.number == num %}
+                          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                      {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                          <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                      {% endif %}
+                  {% endfor %}
+          
+                  {% if page_obj.has_next %}
+                      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                      <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a></li>
+                  {% else %}
+                      <li class="page-item disabled"><span class="page-link">Next</span></li>
+                      <li class="page-item disabled"><span class="page-link">Last &raquo;</span></li>
+                  {% endif %}
+              </ul>
+          </nav>
+          
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+</div>
+
+{% include "Vues/footer.html" %}

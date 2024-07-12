@@ -1,0 +1,35 @@
+<!-- library/templates/library/book_search.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Search</title>
+</head>
+<body>
+    <h1>Search for Books</h1>
+    <form method="GET" action="{% url 'book_search' %}">
+        <p>
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title" value="{{ request.GET.title }}">
+        </p>
+        <p>
+            <label for="author">Author:</label>
+            <input type="text" name="author" id="author" value="{{ request.GET.author }}">
+        </p>
+        <p>
+            <label for="genre">Genre:</label>
+            <input type="text" name="genre" id="genre" value="{{ request.GET.genre }}">
+        </p>
+        <button type="submit">Search</button>
+    </form>
+
+    <h2>Results</h2>
+    <ul>
+        {% for book in books %}
+            <li>{{ book.title }} by {{ book.author }} ({{ book.genre }})</li>
+        {% empty %}
+            <li>No books found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

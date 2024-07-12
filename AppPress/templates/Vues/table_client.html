@@ -1,0 +1,316 @@
+<!-- myapp/templates/myapp/table_client.html -->
+
+    {% include "Vues/header.html" %}
+    {% include "Vues/Side.html" %}
+
+    <div class="col-sm-10">
+
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+
+            <h1 class="h1">Table Client  </h1>
+       
+            <div class="px-3 py-2 mb-1">
+                <div class="container d-flex flex-wrap justify-content-center">
+                    
+                      <form class="col-12 col-lg-auto mb-2 mb-lg-0 btn-group" method="get" action="{% url 'table_client' %}" role="search">
+                      
+                        <input  type="search" class="form-control" name="query1" value="{{ request.GET.query1 }}" placeholder="Search Name..." aria-label="Search">
+                      </form>
+                      <form class="col-12 col-lg-auto mb-2 mb-lg-0 btn-group" method="get" action="{% url 'table_client' %}" role="search">
+                      
+                        <input  type="search" class="form-control" name="query2" value="{{ request.GET.query2 }}" placeholder="Search Email..." aria-label="Search">
+                      </form>
+
+                      <form class="col-12 col-lg-auto mb-2 mb-lg-0 btn-group" method="get" action="{% url 'table_client' %}" role="search">
+                      
+                        <input  type="search" class="form-control" name="query3" value="{{ request.GET.query3 }}" placeholder="Search Number..." aria-label="Search">
+                      </form>
+
+                   
+
+                    <div class="text-end">
+                        <a href="{% url 'modals_client' %}" class="btn btn-md btn-outline-secondary">Ajouté Client</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <div class="px-3 py-2 mb-1">
+              <div class="container d-flex flex-wrap justify-content-center">
+              
+
+                    <form class="col-12 col-lg-auto mb-2 mb-lg-0 btn-group" method="get" action="{% url 'table_client' %}" role="search">
+                      
+                      <input  type="search" height='20px' class="form-control" name="nbr" value="{{ request.GET.nbr }}" placeholder="Nombre..." aria-label="Search">
+                    </form>
+ 
+              </div>
+          </div>
+      </div>
+
+        <div class="table-responsive small">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">N°</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Prenom</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Numero</th>
+                        <th scope="col">Adresse</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                {% if query %}
+                <tbody>
+                 {% for client in query %}
+                      <tr>
+                          <td>{{ forloop.counter }}</td>
+                          <td>{{ client.Username }}</td>
+                          <td>{{ client.Lastname }}</td>
+                          <td>{{ client.Mail }}</td>
+                          <td>{{ client.Number }}</td>
+                          <td>{{ client.Adresse }}</td>
+                          <td>
+                              <form action="{% url 'forms' %}" method="POST" style="display:inline;">
+                                  {% csrf_token %}
+                                  <button type="submit" name="apt" value="{{ client.pk }}" class="btn btn-outline-warning">Update</button>
+                              </form>
+                              <form action="{% url 'modals_depot'  %}" method="POST" style="display:inline;">
+                                  {% csrf_token %}
+                                  <button type="submit"  name="apt" value="{{ client.pk }}" class="btn btn-outline-info">New Depot</button>
+                              </form>
+                          </td>
+                      </tr>
+                      {% endfor %}
+              </tbody>
+                {% else %}
+
+                <tbody>
+                    {% for client in page_obj %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ client.Username }}</td>
+                            <td>{{ client.Lastname }}</td>
+                            <td>{{ client.Mail }}</td>
+                            <td>{{ client.Number }}</td>
+                            <td>{{ client.Adresse }}</td>
+                            <td>
+                                <form action="{% url 'forms' %}" method="POST" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" name="apt" value="{{ client.pk }}" class="btn btn-outline-warning">Update</button>
+                                </form>
+                                <form action="{% url 'modals_depot'  %}" method="POST" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit"  name="apt" value="{{ client.pk }}" class="btn btn-outline-info">New Depot</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                {% endif %} 
+            </table>
+
+        </div>
+        {% comment %} onclick="return confirm('Are you sure?')" {% endcomment %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">&laquo; First</span></li>
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a></li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                    <li class="page-item disabled"><span class="page-link">Last &raquo;</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script>
+    const num = new Map();
+    const nom = new Map();
+    const prenom = new Map();
+    const email = new Map();
+    const numero = new Map();
+    const adresse = new Map();
+
+    tbody = document.getElementsByTagName("tbody")[0];
+    tbody_tr = tbody.children;
+    elm_count = parseInt(document.getElementById("el_count").innerHTML, 10);
+    class_name_list = ["no", "username", "lastname", "mail", "number", "adresse"];
+
+
+    // filter
+    for (let i=0; i<8; i++) {
+      tbody_tr_td = tbody_tr[i].getElementsByClassName("no")[0];
+      num[tbody_tr_td.innerHTML] = tbody_tr[i];
+
+      tbody_tr_td = tbody_tr[i].getElementsByClassName("username")[0];
+      nom[tbody_tr_td.innerHTML] = tbody_tr[i];
+
+      tbody_tr_td = tbody_tr[i].getElementsByClassName("lastname")[0];
+      prenom[tbody_tr_td.innerHTML] = tbody_tr[i];
+
+      tbody_tr_td = tbody_tr[i].getElementsByClassName("mail")[0];
+      email[tbody_tr_td.innerHTML] = tbody_tr[i];
+
+      tbody_tr_td = tbody_tr[i].getElementsByClassName("number")[0];
+      numero[tbody_tr_td.innerHTML] = tbody_tr[i];
+
+      tbody_tr_td = tbody_tr[i].getElementsByClassName("adresse")[0];
+      adresse[tbody_tr_td.innerHTML] = tbody_tr[i];
+
+    }
+
+    function search_(){
+      let found = false;
+      search_value = document.getElementById("search_field").value;
+      for (let i=0; i<8; i++) {
+        for(let class_name of Object.keys(class_name_list)){
+
+        }
+        tbody_tr_td = tbody_tr[i].getElementsByClassName("no")[0];
+        num[tbody_tr_td.innerHTML] = tbody_tr[i];
+      }
+      if(search_value == ""){
+        for(let j of tbody_tr){
+          j.style.display = "table-row";
+        }
+      }else{
+        for(let k of Object.keys(num)){
+          if(k.includes(search_value)){
+            found = true;
+            for(let j of tbody_tr){
+              if(j != num[k]){
+                j.style.display = "none";
+              }else{
+                j.style.display = "table-row";
+              }
+            }
+          }
+        }
+
+        if(!found){
+          for(let k of Object.keys(nom)){
+            if(k.includes(search_value)){
+              found = true;
+              for(let j of tbody_tr){
+                if(j != nom[k]){
+                  j.style.display = "none";
+                }else{
+                  j.style.display = "table-row";
+                }
+              }
+            }
+          }
+        }
+
+        if(!found){
+          for(let k of Object.keys(prenom)){
+            if(k.includes(search_value)){
+              found = true;
+              for(let j of tbody_tr){
+                if(j != prenom[k]){
+                  j.style.display = "none";
+                }else{
+                  j.style.display = "table-row";
+                }
+              }
+            }
+          }
+        }
+
+        if(!found){
+          for(let k of Object.keys(email)){
+            if(k.includes(search_value)){
+              found = true;
+              for(let j of tbody_tr){
+                if(j != email[k]){
+                  j.style.display = "none";
+                }else{
+                  j.style.display = "table-row";
+                }
+              }
+            }
+          }
+        }
+
+        if(!found){
+          for(let k of Object.keys(numero)){
+            if(k.includes(search_value)){
+              found = true;
+              for(let j of tbody_tr){
+                if(j != numero[k]){
+                  j.style.display = "none";
+                }else{
+                  j.style.display = "table-row";
+                }
+              }
+            }
+          }
+        }
+
+        if(!found){
+          for(let k of Object.keys(adresse)){
+            if(k.includes(search_value)){
+              found = true;
+              for(let j of tbody_tr){
+                if(j != adresse[k]){
+                  j.style.display = "none";
+                }else{
+                  j.style.display = "table-row";
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+  </script>
+
+
+{% include "Vues/footer.html" %}

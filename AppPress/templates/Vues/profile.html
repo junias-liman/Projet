@@ -1,0 +1,29 @@
+{% include "Vues/header.html" %}
+<div class=" my-2">
+        <div class="position-relative p-5 text-center text-muted bg-body border border-dashed rounded-5">
+            <form action="{% url "dashboard" %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" name="btn" class="position-absolute top-0 end-0 p-3 m-3 btn-close bg-secondary bg-opacity-10 rounded-pill"></button>
+                <svg class="bi mt-5 mb-3" width="48" height="48"></svg>
+            <form/>
+            <figure>
+                {% comment %} <svg  class="bd-placeholder-img figure-img img-fluid rounded" style="background-image:url('http://127.0.0.1:8000/static/img/Liman.png')" width="320" height="220" xmlns="http://www.w3.org/2000/svg" role="img">
+                    <rect width="100%" height="100%" fill="#88e9"/><text x="50%" y="50%" fill="#dee2e" dy=".3em">
+                        
+                </svg>   {% endcomment %}
+                <img src="http://127.0.0.1:8000/static/img/Liman.png" alt="logo"  width="250px" height="250px">
+            </figure>
+            
+            <h1 class="text-body-emphasis">{{  util.Username }} {{ util.Lastname }}</h1>  
+            <h4 class="h6">Identifiant:</h4><h2>{{ util.Identifiant }}</h2>
+            <h4 class="h6">Email:</h4><h2>{{ util.Mail }}</h2>
+            <h4 class="h6">Numéro:</h4><h2>{{ util.Number }}</h2>
+            <h4 class="h6">Adresse:</h4><h2>{{ util.Adresse }}</h2>
+          
+            <button class="btn btn-primary px-5 mb-5"  type="button">
+                Modifier
+            </button>
+        </div>
+  </div>
+
+{% include "Vues/footer.html" %}
